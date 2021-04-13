@@ -15,6 +15,28 @@ harry = {
     "student_id": 1007,
     "first_name": "Harry",
     "last_name": "Potter",
+    "enrollments": [
+        {
+            "term": "spring_2021",
+            "gpa": "3.4",
+            "start_date": "Mar 15 2021",
+            "end_date": "May 17 2021",
+            "course": [
+                {
+                    "course_id": "csd310",
+                    "description": "database_development_and_use",
+                    "instructor": "chris_soriano",
+                    "grade": "B"
+                },
+                {
+                   "course_id": "320",
+                    "description": "programming_with_java",
+                    "instructor": "darrell_payne",
+                    "grade": "B+" 
+                }
+            ]
+        },
+    ]
 }
 harry_document_id = students.insert_one(harry).inserted_id
 
@@ -23,6 +45,28 @@ ron = {
     "student_id": 1008,
     "first_name": "Ron",
     "last_name": "Weasley",
+    "enrollments": [
+        {
+            "term": "spring_2021",
+            "gpa": "3.0",
+            "start_date": "Mar 15 2021",
+            "end_date": "May 17 2021",
+            "course": [
+                {
+                    "course_id": "csd310",
+                    "description": "database_development_and_use",
+                    "instructor": "chris_soriano",
+                    "grade": "B-"
+                },
+                {
+                   "course_id": "320",
+                    "description": "programming_with_java",
+                    "instructor": "darrell_payne",
+                    "grade": "C+" 
+                }
+            ]
+        },
+    ]
 }
 ron_document_id = students.insert_one(ron).inserted_id
 
@@ -31,6 +75,28 @@ hermione = {
     "student_id": 1009,
     "first_name": "Hermione",
     "last_name": "Granger",
+    "enrollments": [
+        {
+            "term": "spring_2021",
+            "gpa": "4.0",
+            "start_date": "Mar 15 2021",
+            "end_date": "May 17 2021",
+            "course": [
+                {
+                    "course_id": "csd310",
+                    "description": "database_development_and_use",
+                    "instructor": "chris_soriano",
+                    "grade": "A+"
+                },
+                {
+                   "course_id": "320",
+                    "description": "programming_with_java",
+                    "instructor": "darrell_payne",
+                    "grade": "A+" 
+                }
+            ]
+        },
+    ]
 }
 hermione_document_id = students.insert_one(hermione).inserted_id
 
