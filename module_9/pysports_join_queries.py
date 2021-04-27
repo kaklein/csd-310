@@ -46,7 +46,7 @@ try:
 
 #error handling for exceptions
 except mysql.connector.Error as err:
-    if err.errno == errorcode.ER_ACESS_DENIED_ERROR:
+    if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
         print("  The supplied username or password are invalid")
 
     elif err.errno == errorcode.ER_BAD_DB_ERROR:
