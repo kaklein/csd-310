@@ -1,18 +1,20 @@
 # Katie Klein
 # CSD 310
 # WhatABook
-# 8 May 2021
+# 10 May 2021
 
 '''
-This program allows WhatABook customers to view their catalog,
-view their store locations, and access a personal account
-wherein users can view and add to their wishlist.
+
+This program allows WhatABook customers to view the catalog, view store
+locations, and access a personal account wherein users can view and add
+to their wishlist.
 
 All data is stored in a SQL database with the following four tables:
 - user
 - store
 - book
 - wishlist
+
 '''
 
 
@@ -23,8 +25,6 @@ from mysql.connector import errorcode
 from time import sleep
 
 
-''' CONNECTING TO WHATABOOK SQL DATABASE '''
-
 # database config object
 config = {
     "user": "whatabook_user",
@@ -34,38 +34,44 @@ config = {
     "raise_on_warnings": True
 }
 
+
 ''' FUNCTIONS '''
 
 def show_menu():
     '''Function to show main menu and allow selection'''
 
-    # display header, instructions, and menu options
+    # display header
     print("\n-- MAIN MENU --")
+
+    # display instructions
     print("Enter a number to select one of the following options:")
+
+    # display menu options
     print("\n  1. View Books\n  2. View Store Locations\n  3. My Account\n  4. Exit Program")
     
     # get selection from user
-    main_selection = input("\n>> ")
+    menu_selection = input("\n>> ")
 
     # while loop to ensure a valid menu option is selected
-    while main_selection not in ("1", "2", "3", "4"):
-        main_selection = input("\nINVALID INPUT: Please enter 1, 2, 3, or 4\n>> ")
+    while menu_selection not in ("1", "2", "3", "4"):
+        menu_selection = input("\nINVALID INPUT: Please enter 1, 2, 3, or 4\n>> ")
 
     # if View Books is chosen
-    if main_selection == "1":
+    if menu_selection == "1":
         show_books(cursor)
 
     # if View Store Locations is chosen
-    if main_selection == "2":
+    if menu_selection == "2":
         show_locations(cursor)
 
     # if My Account is chosen
-    if main_selection == "3":
+    if menu_selection == "3":
         user_id = validate_user(cursor)
         show_account_menu(cursor, user_id)
 
     # if Exit Program is chosen
-    if main_selection == "4":
+    if menu_selection == "4":
+        print("\n   Program terminated. Goodbye.")
         exit()
 
 def show_books(cursor):
@@ -75,10 +81,11 @@ def show_books(cursor):
     print("\n-- BOOK CATALOG --\n")
     
     # SQL query to show contents from book table
-    cursor.execute('SELECT book_name, author, details, book_id FROM book ORDER BY book_name')
+    cursor.execute("SELECT book_name, author, details, book_id" +
+                    " FROM book ORDER BY book_name")
     books = cursor.fetchall()
     for book in books:
-        print(f"Title: {book[0]}\nAuthor: {book[1]}\nDetails: {book[2]}\nBook ID: {book[3]}\n")
+        print(f"Title: {book[0]}\nAuthor: {book[1]}\nDetails: {book[2]}\n")
 
     # end of catalog message
     print("-- END OF CATALOG --")
@@ -93,13 +100,12 @@ def show_locations(cursor):
     print("\n-- WHATABOOK STORE LOCATIONS --\n")
 
     # SQL query to show contents from store table
-    cursor.execute('SELECT * FROM store')
+    cursor.execute("SELECT locale FROM store")
     stores = cursor.fetchall()
     for store in stores:
-        print(f"Address: {store[1]}")
-        print(f"Store ID: {store[0]}\n")
+        print(f"Address: {store[0]}\n")
 
-    # end of list message
+    # display end of list message
     print("-- END OF STORE LIST --")
 
     # show navigation options (main menu or exit)
@@ -111,8 +117,8 @@ def validate_user(cursor):
     # display header
     print("\n-- ACCOUNT LOGIN --\n")
 
-    # SQL query to get all user_ids and append to list
-    cursor.execute('SELECT user_id FROM user')
+    # SQL query to get all user_ids and append to list of strings
+    cursor.execute("SELECT user_id FROM user")
     user_id_list = []
     query_results = cursor.fetchall()
     for row in query_results:
@@ -120,7 +126,9 @@ def validate_user(cursor):
 
     # prompt for user_id
     user_id = input("Enter your user_id number:\n>> ")
-    while (user_id not in user_id_list): # compare user_id to list all user_ids in database
+
+    # while loop to ensure input user_id is in list of all user_ids
+    while (user_id not in user_id_list):
         user_id = input("\nINVALID INPUT: Please enter a valid user_id number:\n>> ")
 
     # display success message
@@ -136,44 +144,36 @@ def show_account_menu(cursor, user_id):
     '''Function to show account menu options and allow selection'''
 
     # get first name of user
-    query = 'SELECT first_name FROM user WHERE user_id = ' + str(user_id)
-    cursor.execute(query)
+    cursor.execute("SELECT first_name FROM user" +
+                    " WHERE user_id = " + str(user_id))
     first_name = cursor.fetchall()
     
     # print account header customized with user's first name
     for name in first_name:
         print(f"-- {name[0].upper()}'S ACCOUNT --")
 
-    # show account menu
-    print("  1. View Wishlist\n  2. Add Book\n  3. Main Menu")
+    # show account menu options
+    print("  1. Wishlist\n  2. Add Book\n  3. Main Menu")
 
     # store user input
-    account_selection = input("\n>> ")
+    menu_selection = input("\n>> ")
     
     # while loop to ensure a valid menu option is selected
-    while account_selection not in ("1", "2", "3"):
-        account_selection = input("\nINVALID INPUT: Please enter 1, 2, or 3\n>> ")
+    while menu_selection not in ("1", "2", "3"):
+        menu_selection = input("\nINVALID INPUT: Please enter 1, 2, or 3\n>> ")
 
     # if View Wishlist is selected
-    if account_selection == "1":
+    if menu_selection == "1":
         show_wishlist(cursor, user_id)
+    
     # if Add Book is selected
-    if account_selection == "2":
+    if menu_selection == "2":
         book_id = show_books_to_add(cursor, user_id)
         add_book_to_wishlist(cursor, user_id, book_id)
-    # if Main Menu is selected
-    if account_selection == "3":
-        show_menu()
-
-def get_user_wishlist(user_id):
-    '''Function to store SQL select statement for a specific user's wishlist based on user_id'''
-
-    # inner query gets info for ALL items in wishlist table
-    inner_query = 'SELECT book_name, author, details, book.book_id AS book_id, wishlist.user_id AS user_id FROM book INNER JOIN wishlist ON wishlist.book_id = book.book_id'
-    # outer query gets info for items on specific user's wishlist
-    user_wishlist_select = 'SELECT book_name, author, details, book_id FROM (' + inner_query + ') AS consolidated_wishlist WHERE consolidated_wishlist.user_id = ' + str(user_id)
     
-    return user_wishlist_select
+    # if Main Menu is selected
+    if menu_selection == "3":
+        show_menu()
 
 def show_wishlist(cursor, user_id):
     '''Function to show a specific user's wishlist'''
@@ -182,18 +182,20 @@ def show_wishlist(cursor, user_id):
     print("\n-- WISHLIST --\n")
     
     # get user's wishlist
-    user_wishlist_select = get_user_wishlist(user_id) # call function to get select query with specific user_id
-    cursor.execute(user_wishlist_select) # execute select query
+    cursor.execute("SELECT book.book_name, book.author" +
+                    " FROM book" +
+                    " INNER JOIN wishlist ON book.book_id = wishlist.book_id" +
+                    " INNER JOIN user ON wishlist.user_id = user.user_id" +
+                    " WHERE user.user_id = " + user_id)
+
     user_wishlist = cursor.fetchall()
     
     # print user's wishlist
     for row in user_wishlist:
         print(f"Title: {row[0]}")
-        print(f"Author: {row[1]}")
-        print(f"Details: {row[2]}")
-        print(f"Book ID: {row[3]}\n")
+        print(f"Author: {row[1]}\n")
 
-    # print end of list message
+    # display end of list message
     print("-- END OF WISHLIST --")
 
     # show navigation options (main menu or exit)
@@ -205,27 +207,19 @@ def show_books_to_add(cursor, user_id):
     # display header
     print("\n-- BOOKS AVAILABLE TO ADD TO WISHLIST --\n")
 
-    # get user's wishlist
-    user_wishlist = get_user_wishlist(user_id)
-
     # SQL select query to get books NOT in user's wishlist
-    # - all_books_query gets book_name, author, and user_id for ALL items in wishlist table
-    all_books_query = 'SELECT book_name, author, details, book_id FROM book ORDER BY book_name'
-    # - outer_query gets list of books not already in user's wishlist
-    outer_query = ("SELECT book_name, author, details, book_id FROM (" + all_books_query + ") "
-    "AS all_books WHERE book_id NOT IN (SELECT user_wishlist.book_id "
-    "FROM (" + user_wishlist + ") AS user_wishlist)"
-    )
+    cursor.execute("SELECT book_name, author, book_id FROM book" +
+                    " WHERE book_id NOT IN (SELECT book_id FROM wishlist" +
+                    " WHERE user_id = " + str(user_id) + ")" +
+                    " ORDER BY book_name")
     
-    cursor.execute(outer_query)
     books_to_add = cursor.fetchall()
 
     # print list of books not in user's wishlist
     for book in books_to_add:
         print(f"Title: {book[0]}")
         print(f"Author: {book[1]}")
-        print(f"Details: {book[2]}")
-        print(f"Book ID: {book[3]}\n")
+        print(f"Book ID: {book[2]}\n")
 
     # end of list message
     print("-- END OF LIST --")
@@ -233,14 +227,14 @@ def show_books_to_add(cursor, user_id):
     # create list of book_ids from books_to_add list for validation purposes
     books_to_add_ids = []
     for book in books_to_add:
-        books_to_add_ids.append(str(book[3]))
+        books_to_add_ids.append(str(book[2]))
 
     # get info from user on book to be inserted
-    book_id = input("\nEnter the Book ID of the book you want to add to your wishlist:\n(m for main menu)\n>> ")
+    book_id = input("\nEnter the Book ID of the book you want to add to your wishlist:\n(m to return to main menu)\n>> ")
          
     # while loop to ensure input book_id is valid   
     while book_id not in books_to_add_ids and book_id.lower() != "m":
-        book_id = input("\nINVALID INPUT: Please enter a valid book_id\n(m for main menu)\n>> ")
+        book_id = input("\nINVALID INPUT: Please enter a valid book_id\n(m to return to main menu)\n>> ")
 
     # allow exit to main menu
     if book_id.lower() == "m":
@@ -253,11 +247,13 @@ def add_book_to_wishlist(cursor, user_id, book_id):
     '''Function to add a book to a user's wishlist'''
 
     # SQL insert into wishlist table
-    cursor.execute("INSERT INTO wishlist (user_id, book_id)"
-    "VALUES (" + user_id + ", " + book_id + ")")
+    cursor.execute("INSERT INTO wishlist (user_id, book_id)" +
+                    "VALUES (" + user_id + ", " + book_id + ")")
+
+    db.commit() # commit insert to database
 
     # get book_name from book_id added
-    cursor.execute('SELECT book_name FROM book WHERE book_id = ' + book_id)
+    cursor.execute("SELECT book_name FROM book WHERE book_id = " + book_id)
     book_names = cursor.fetchall()
     
     for row in book_names:
@@ -265,6 +261,8 @@ def add_book_to_wishlist(cursor, user_id, book_id):
 
     # print success statement with book_name
     print(f'\n"{book_name}" was successfully added to your wishlist.')
+    
+    # pause for 1 second on success message
     sleep(1)
 
     # show updated wishlist
@@ -287,10 +285,12 @@ def show_navigation():
     if user_selection == "1":
         show_menu()
     if user_selection == "2":
+        print("\n   Program terminated. Goodbye.")
         exit()
 
+
 ''' PROGRAM EXECUTION '''
-# call main function
+
 try:
     # connect to whatabook database
     db = mysql.connector.connect(**config)
@@ -298,7 +298,7 @@ try:
     # get the cursor object
     cursor = db.cursor()
     
-    # execute program - starts by displaying main menu
+    # main execution of program - starts by displaying main menu
     show_menu()
 
 except mysql.connector.Error as err:
