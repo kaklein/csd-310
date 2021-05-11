@@ -208,7 +208,7 @@ def show_books_to_add(cursor, user_id):
     print("\n-- BOOKS AVAILABLE TO ADD TO WISHLIST --\n")
 
     # SQL select query to get books NOT in user's wishlist
-    cursor.execute("SELECT book_name, author, book_id FROM book" +
+    cursor.execute("SELECT book_name, author, details, book_id FROM book" +
                     " WHERE book_id NOT IN (SELECT book_id FROM wishlist" +
                     " WHERE user_id = " + str(user_id) + ")" +
                     " ORDER BY book_name")
@@ -219,7 +219,8 @@ def show_books_to_add(cursor, user_id):
     for book in books_to_add:
         print(f"Title: {book[0]}")
         print(f"Author: {book[1]}")
-        print(f"Book ID: {book[2]}\n")
+        print(f"Details: {book[2]}")
+        print(f"Book ID: {book[3]}\n")
 
     # end of list message
     print("-- END OF LIST --")
@@ -227,7 +228,7 @@ def show_books_to_add(cursor, user_id):
     # create list of book_ids from books_to_add list for validation purposes
     books_to_add_ids = []
     for book in books_to_add:
-        books_to_add_ids.append(str(book[2]))
+        books_to_add_ids.append(str(book[3]))
 
     # get info from user on book to be inserted
     book_id = input("\nEnter the Book ID of the book you want to add to your wishlist:\n(m to return to main menu)\n>> ")
