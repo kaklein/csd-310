@@ -1,7 +1,7 @@
 # Katie Klein
 # CSD 310
 # WhatABook
-# 10 May 2021
+# 12 May 2021
 
 '''
 
@@ -132,7 +132,7 @@ def validate_user(cursor):
         user_id = input("\nINVALID INPUT: Please enter a valid user_id number:\n>> ")
 
     # display success message
-    print("\nThank you, user_id accepted.\n")
+    print("\nThank you, user_id accepted.")
 
     # pause before displaying account information
     sleep(1)
@@ -150,7 +150,7 @@ def show_account_menu(cursor, user_id):
     
     # print account header customized with user's first name
     for name in first_name:
-        print(f"-- {name[0].upper()}'S ACCOUNT --")
+        print(f"\n-- {name[0].upper()}'S ACCOUNT --")
 
     # show account menu options
     print("  1. Wishlist\n  2. Add Book\n  3. Main Menu")
@@ -199,7 +199,7 @@ def show_wishlist(cursor, user_id):
     print("-- END OF WISHLIST --")
 
     # show navigation options (main menu or exit)
-    show_navigation()
+    show_account_menu(cursor, user_id)
 
 def show_books_to_add(cursor, user_id):
     '''Function to show books not currently in user's wishlist'''
@@ -231,15 +231,15 @@ def show_books_to_add(cursor, user_id):
         books_to_add_ids.append(str(book[3]))
 
     # get info from user on book to be inserted
-    book_id = input("\nEnter the Book ID of the book you want to add to your wishlist:\n(m to return to main menu)\n>> ")
+    book_id = input("\nEnter the Book ID of the book you want to add to your wishlist:\n(m to return to account menu)\n>> ")
          
     # while loop to ensure input book_id is valid   
     while book_id not in books_to_add_ids and book_id.lower() != "m":
-        book_id = input("\nINVALID INPUT: Please enter a valid book_id\n(m to return to main menu)\n>> ")
+        book_id = input("\nINVALID INPUT: Please enter a valid book_id\n(m to return to account menu)\n>> ")
 
     # allow exit to main menu
     if book_id.lower() == "m":
-        show_menu()
+        show_account_menu(cursor, user_id)
     else:
         # if valid book_id, return it
         return book_id
