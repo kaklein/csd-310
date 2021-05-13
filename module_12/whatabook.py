@@ -1,7 +1,9 @@
 # Katie Klein
 # CSD 310
-# WhatABook
+# Module 12.3 Assignment
 # 12 May 2021
+
+# Program Name: WhatABook
 
 '''
 
